@@ -68,7 +68,7 @@ namespace unipp
 
 		constexpr char_view(const code_unit* character, from_string_view_data_t)
 			: m_character(character)
-			, m_code_unit_count(decode_code_unit_len())
+			, m_code_unit_count(decode_code_unit_count())
 		{}
 
 		constexpr bool able_to_decode() const
@@ -76,7 +76,7 @@ namespace unipp
 			return facts::invalid_code_unit_len != m_code_unit_count;
 		}
 
-		constexpr size_t decode_code_unit_len() const
+		constexpr size_t decode_code_unit_count() const
 		{
 			if (nullptr == m_character)
 			{
