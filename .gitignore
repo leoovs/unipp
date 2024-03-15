@@ -1,0 +1,12 @@
+# CMake
+**/build/**
+
+# Clangd
+**/.cache/**
+
+# Visual Studio (Code)
+**/.vs/**
+**/.vscode/**
+**/out/**
+**/JSON/**
+
