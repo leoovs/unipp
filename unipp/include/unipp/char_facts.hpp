@@ -14,7 +14,9 @@ namespace unipp
 	public:
 		using code_unit = char;
 
-		static constexpr size_t invalid_code_unit_len = 0;
+		static constexpr code_unit terminator = '\0';
+
+		static constexpr size_t invalid_code_unit_count = 0;
 
 		static constexpr size_t min_code_unit_count = 1;
 		static constexpr size_t max_code_unit_count = 4;
@@ -58,6 +60,29 @@ namespace unipp
 				return 0b11111111;
 			}
 		}
+	};
+
+	template<>
+	class char_facts<char16_t>
+	{
+	public:
+		using code_unit = char16_t;
+
+		static constexpr code_unit terminator = u'\0';
+
+		static constexpr size_t invalid_code_unit_count = 0;
+
+		static constexpr char16_t high_surrogate_mask = 0b1111110000000000;
+		static constexpr char16_t high_surrogate_signature = 0b1101100000000000;
+
+		static constexpr char16_t low_surrogate_mask = 0b1111110000000000;
+		static constexpr char16_t low_surrogate_signature = 0b1101110000000000;
+
+		static constexpr size_t code_unit_single = 1;
+		static constexpr size_t code_unit_pair = 2;
+
+		static constexpr size_t code_unit_significant_bit_count = 10;
+		static constexpr char32_t surrogate_pair_bit_clip = 0x10000;
 	};
 }
 

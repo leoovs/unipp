@@ -1,21 +1,52 @@
 #include <iostream>
 
-#include <unipp/codepoint.hpp>
 #include <unipp/char_view.hpp>
+
+void u8_example()
+{
+	std::string msg = "Привет мир! 哈囉世界!"
+	// "\xff\xff\xff\xff" // bad code unit sequence.
+	;
+
+	unipp::char8_view view(msg);
+	unipp::code_point cp = view.decode();
+
+	while (unipp::nullchar != cp)
+	{
+		if (unipp::invalid_char == cp)
+		{
+			std::cout << "Bad UTF-8 code unit sequence!\n";
+			break;
+		}
+
+		std::cout << cp.symbol << '\n';
+		cp = (view = view.next()).decode();
+	}
+}
+
+void u16_example()
+{
+	std::u16string msg = u"Привет мир! 哈囉世界! \xD800\xffff";
+
+	unipp::char16_view view(msg);
+	unipp::code_point cp = view.decode();
+
+	while (cp != unipp::nullchar)
+	{
+		if (cp == unipp::invalid_char)
+		{
+			std::cout << "Bad UTF-16 code unit sequence!\n";
+			break;
+		}
+
+		std::cout << cp.symbol << std::endl;
+		cp = (view = view.next()).decode();
+	}
+}
 
 int main()
 {
-	std::string msg = "Привет мир! Hello World!哈囉世界!";
-
-	unipp::char_view<char> view(msg);
-	unipp::codepoint cp = view.decode();
-
-	while (cp != unipp::codepoint())
-	{
-		std::cout << cp.symbol << " - " << view.str_view() << std::endl;
-		cp = (view = view.next()).decode();
-	}
-
-	return 0;
+	u8_example();
+	u16_example();
 }
 
