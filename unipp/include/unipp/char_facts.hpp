@@ -1,6 +1,7 @@
 #pragma once
 
 #include "unipp/pch.hpp"
+#include "unipp/code_point.hpp"
 
 namespace unipp
 {
@@ -60,6 +61,28 @@ namespace unipp
 				return 0b11111111;
 			}
 		}
+
+		static constexpr size_t map_code_point_to_code_unit_count(code_point ch)
+		{
+			if (ch.symbol <= U'\x7F')
+			{
+				return 1;
+			}
+			else if (ch.symbol <= U'\x7FF')
+			{
+				return 2;
+			}
+			else if (ch.symbol <= U'\xFFFF')
+			{
+				return 3;
+			}
+			else if (ch.symbol <= U'\x10FFFF')
+			{
+				return 4;
+			}
+
+			return invalid_code_unit_count;
+		}
 	};
 
 	template<>
@@ -83,6 +106,15 @@ namespace unipp
 
 		static constexpr size_t code_unit_significant_bit_count = 10;
 		static constexpr char32_t surrogate_pair_bit_clip = 0x10000;
+
+		static constexpr size_t map_code_point_to_code_unit_count(code_point ch)
+		{
+			if (ch.symbol < surrogate_pair_bit_clip)
+			{
+				return code_unit_single;
+			}
+			return code_unit_pair;
+		}
 	};
 }
 
