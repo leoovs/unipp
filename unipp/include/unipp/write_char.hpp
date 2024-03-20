@@ -1,6 +1,7 @@
 #pragma once
 
 #include "unipp/char_facts.hpp"
+#include <iterator>
 
 namespace unipp
 {
@@ -9,7 +10,7 @@ namespace unipp
 		typename OutputT = typename OutputIterT::container_type::value_type
 	>
 	constexpr
-	std::enable_if_t<std::is_same_v<OutputT, char>, bool>
+	std::enable_if_t<std::is_same_v<OutputT, char>, OutputIterT>
 	write_char(code_point ch, OutputIterT out)
 	{
 		using facts = char_facts<OutputT>;
@@ -17,13 +18,13 @@ namespace unipp
 
 		if (invalid_char == ch)
 		{
-			return false;
+			return out;
 		}
 
 		size_t octets = facts::map_code_point_to_code_unit_count(ch);
 		if (facts::invalid_code_unit_count == octets)
 		{
-			return false;
+			return out;
 		}
 
 		size_t value_shift = facts::continuation_byte_significant_bit_count * (octets - 1);
@@ -37,11 +38,11 @@ namespace unipp
 		{
 			value_shift = facts::continuation_byte_significant_bit_count * ioctet;
 			value_mask = ~facts::continuation_byte_mask;
-			out = static_cast<code_unit>((ch.symbol >> value_shift) & value_mask)
+			*out++ = static_cast<code_unit>((ch.symbol >> value_shift) & value_mask)
 				| facts::continuation_byte_signature;
 		}
 
-		return true;
+		return out;
 	}
 
 	template<
@@ -49,7 +50,7 @@ namespace unipp
 		typename OutputT = typename OutputIterT::container_type::value_type
 	>
 	constexpr
-	std::enable_if_t<std::is_same_v<OutputT, char16_t>, bool>
+	std::enable_if_t<std::is_same_v<OutputT, char16_t>, OutputIterT>
 	write_char(code_point ch, OutputIterT out)
 	{
 		using facts = char_facts<OutputT>;
@@ -57,15 +58,15 @@ namespace unipp
 
 		if (invalid_char == ch)
 		{
-			return false;
+			return out;
 		}
 
 		size_t count = facts::map_code_point_to_code_unit_count(ch);
 
 		if (facts::code_unit_single == count)
 		{
-			out = static_cast<code_unit>(ch.symbol);
-			return true;
+			return *out++ = static_cast<code_unit>(ch.symbol);
+			return out;
 		}
 
 		char32_t cliped = ch.symbol - facts::surrogate_pair_bit_clip;
@@ -77,10 +78,10 @@ namespace unipp
 		high += facts::high_surrogate_signature;
 		low += facts::low_surrogate_signature;
 
-		out = high;
-		out = low;
+		*out++ = high;
+		*out++ = low;
 
-		return true;
+		return out;
 	}
 }
 
