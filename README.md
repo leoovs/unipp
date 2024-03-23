@@ -10,9 +10,9 @@ ecosystem from scratch, without relying on third parties as much as possible.
 However, over the time, developing even a minimal Unicode support has become
 really tedious. That's why I decided to become a third party for myself by
 moving all of the Unicode support into a separate library that I can easily
-copy'n'paste into any of my projects (or add it as a __CPM__ package which I
-plan to support in the future). So yeah, the aim of this library is not really
-to confirm to the community standards, just mine.
+copy'n'paste into any of my projects (or add it as a __CPM__ package). So yeah,
+the aim of this library is not really to confirm to the community standards,
+just mine.
 
 ## Prerequisites
 
@@ -40,6 +40,12 @@ target_link_libraries(
 )
 ```
 
+Using CPM is also an option:
+
+```CMake
+CPMAddPackage("gh:leoovs/unipp#dev")
+```
+
 ## How to use
 
 Currently, all the __Uni++__ source code is `constexpr`-covered. The library
@@ -51,40 +57,23 @@ to store code units, it only relies on the standard types like `char` or
 type 'utf8' or 'utf16' everywhere (my personal preference), the only exception
 is the `char` built-in type, see the __Remarks__ section below.
 
-Here is a basic example of how one might want to use the __Uni++__ library:
+Here's a basic use-case of __Uni++__:
 
 ```C++
 #include <iostream>
 
-#include <unipp/char_view.hpp>
-#include <unipp/write_char.hpp>
+#include <unipp/convert.hpp>
 
-void example()
+int main()
 {
-	std::u16string in = u"Hello, world! Привет, мир! 哈囉世界! 😊";
-	std::string out; // UTF-8 assumed.
+	std::u16string in = u"Hello, world! Привет, мир! 哈囉世界! 👋🌎";
+	std::string out; // `char`s assumed to be utilized as UTF-8 code units.
 
-	unipp::char16_view v(in); // Iterates over a UTF-16 string.
-	unipp::code_point c = v.decode(); // Stores Unicode code point value.
+	// Based on the iterator `value_type`s the function peeks an appropriate
+	// encoding algorithm.
+	unipp::convert(in.begin(), in.end(), std::back_inserter(out));
 
-	while (unipp::nullchar != c)
-	{
-		if (unipp::invalid_char == c)
-		{
-			std::cerr << "Bad UTF-16 sequence!\n";
-			return;
-		}
-
-		// The `unipp::write_char` function understands that output iterator's
-		// `container_type` stores `char`s, so it encodes the `c` code point as
-		// a UTF-8 character and pushes its code units back to the `out`.
-		unipp::write_char(c, std::back_inserter(out));
-
-		// Move on to the next character.
-		c = (v = v.next()).decode();
-	}
-
-	std::cout << out << '\n';
+	std::cout << out << " (" << out.length() << ") bytes\n";
 }
 ```
 
@@ -94,12 +83,13 @@ The `char` type assumed to be used as a code unit for UTF-8. This is due to the
 lack of C++20's `char8_t` which I don't want to introduce myself as a separate
 library type due to the Occam's Razor. In practice, this should not cause any
 problems, since the initialization of `char[]` is allowed from the UTF-8 string
-literals.
+literals. However beware of `source-charset:utf-8` issues in __MSVC__.
 
 # TODO
 - [ ] Source code documentation
-- [ ] CMake Package Manager (CPM) support (git tags)
 - [ ] Unit testing (maybe)
+- [ ] Take into account UTF-16 byte order
+- [ ] Tag stable releases in git for easier CPM dependency management
 
 # Sources
 - cppreference.com articles on built-in types

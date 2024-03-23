@@ -13,4 +13,3 @@ inline void example_basic()
 
 	std::cout << out << " (" << out.length() << ") bytes\n";
 }
-
