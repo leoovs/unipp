@@ -3,6 +3,7 @@
 
 # Clangd
 **/.cache/**
+.clangd
 
 # Visual Studio (Code)
 **/.vs/**
