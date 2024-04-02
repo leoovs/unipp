@@ -4,6 +4,7 @@
 
 #include "example_basic.hpp"
 #include "example_char_view.hpp"
+#include "example_iterator.hpp"
 
 int main()
 {
@@ -13,5 +14,6 @@ int main()
 
 	example_basic();
 	example_char_view();
+	example_iterator();
 }
 
