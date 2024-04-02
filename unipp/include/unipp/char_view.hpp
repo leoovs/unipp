@@ -21,6 +21,9 @@ namespace unipp
 		constexpr char_view next() const = delete;
 		constexpr char_view prev() const = delete;
 		constexpr std::basic_string_view<CodeUnitT> str_view() const = delete;
+
+		constexpr bool operator==(const char_view& other) const = delete;
+		constexpr bool operator!=(const char_view& other) const = delete;
 	};
 
 	template<>
@@ -92,6 +95,16 @@ namespace unipp
 		constexpr std::basic_string_view<code_unit> str_view() const
 		{
 			return std::basic_string_view<code_unit>(m_character, m_code_unit_count);
+		}
+
+		constexpr bool operator==(const char_view& other) const
+		{
+			return m_character == other.m_character;
+		}
+
+		constexpr bool operator!=(const char_view& other) const
+		{
+			return m_character != other.m_character;
 		}
 
 	private:
@@ -191,6 +204,16 @@ namespace unipp
 		constexpr std::basic_string_view<code_unit> str_view() const
 		{
 			return std::basic_string_view<code_unit>(m_character, m_code_unit_count);
+		}
+
+		constexpr bool operator==(const char_view& other) const
+		{
+			return m_character == other.m_character;
+		}
+
+		constexpr bool operator!=(const char_view& other) const
+		{
+			return m_character != other.m_character;
 		}
 
 	private:
