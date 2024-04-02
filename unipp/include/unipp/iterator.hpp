@@ -10,8 +10,8 @@ namespace unipp
 	public:
 		using view = char_view<std::remove_const_t<CodeUnitT>>;
 
-		using value_type = code_point;
-		using reference = code_point&;
+		using value_type = view;
+		using reference = value_type&;
 
 		constexpr iterator() = default;
 
@@ -21,7 +21,7 @@ namespace unipp
 
 		constexpr value_type operator*() const
 		{
-			return m_view.decode();
+			return m_view;
 		}
 
 		constexpr iterator& operator++()
