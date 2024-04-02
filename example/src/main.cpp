@@ -3,6 +3,7 @@
 #endif
 
 #include "example_basic.hpp"
+#include "example_char_view.hpp"
 
 int main()
 {
@@ -11,5 +12,6 @@ int main()
 #endif // _WIN32
 
 	example_basic();
+	example_char_view();
 }
 
