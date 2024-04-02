@@ -7,14 +7,16 @@
 
 inline void example_iterator()
 {
-	const char16_t s[] = u"Привет, world!";
+	const char s[] = u8"Привет, world!";
 
 	auto begin = unipp::begin(s);
 	auto end = unipp::end(s);
 
-	std::for_each(begin, --end, [](unipp::code_point cp)
+	std::cout << "Iterating over a string:\n";
+
+	std::for_each(begin, --end, [](auto view)
 		{
-			std::cout << "Iterator: " << cp.symbol << '\n';
+			std::cout << view.str_view() << ": " << view.decode().symbol << '\n';
 		}
 	);
 }
