@@ -19,6 +19,7 @@ namespace unipp
 
 		constexpr code_point decode() const = delete;
 		constexpr char_view next() const = delete;
+		constexpr char_view prev() const = delete;
 		constexpr std::basic_string_view<CodeUnitT> str_view() const = delete;
 	};
 
@@ -69,6 +70,23 @@ namespace unipp
 		constexpr char_view next()
 		{
 			return char_view(m_character + m_code_unit_count);
+		}
+
+		constexpr char_view prev()
+		{
+			const code_unit* character = m_character;
+			auto is_continuation = [&character]() constexpr
+				{
+					return (facts::continuation_byte_mask & *character) ==
+						facts::continuation_byte_signature;
+				};
+
+			do
+			{
+				character--;
+			} while (is_continuation());
+
+			return char_view(character);
 		}
 
 		constexpr std::basic_string_view<code_unit> str_view() const
@@ -156,6 +174,18 @@ namespace unipp
 		constexpr char_view next() const
 		{
 			return char_view(m_character + m_code_unit_count);
+		}
+
+		constexpr char_view prev() const
+		{
+			const code_unit* character = m_character - 1;
+
+			if ((facts::low_surrogate_mask & *character) == facts::low_surrogate_signature)
+			{
+				character--;
+			}
+
+			return char_view(character);
 		}
 
 		constexpr std::basic_string_view<code_unit> str_view() const
