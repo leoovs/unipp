@@ -83,7 +83,9 @@ The `char` type assumed to be used as a code unit for UTF-8. This is due to the
 lack of C++20's `char8_t` which I don't want to introduce myself as a separate
 library type due to the Occam's Razor. In practice, this should not cause any
 problems, since the initialization of `char[]` is allowed from the UTF-8 string
-literals. However beware of `source-charset:utf-8` issues in __MSVC__.
+literals. Note that `u8` string literals may behave _strange_ in __MSVC__ so check
+out the `cmake/CharSet.cmake` module that can enforce usage of UTF-8 as a source
+character set.
 
 # TODO
 - [ ] Source code documentation
