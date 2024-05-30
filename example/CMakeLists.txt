@@ -1,3 +1,5 @@
+include(CharSet)
+
 add_executable(unipp_example)
 add_executable(unipp::example ALIAS unipp_example)
 
@@ -19,4 +21,6 @@ set_target_properties(
 	CXX_STANDARD 17
 	CXX_STANDARD_REQUIRED TRUE
 )
+
+enforce_msvc_utf8(unipp_example)
 
