@@ -2,6 +2,8 @@
 
 #include "unipp/char_view.hpp"
 
+#include <iterator>
+
 namespace unipp
 {
 	template<typename CodeUnitT>
