@@ -39,7 +39,7 @@ namespace unipp
 		using facts = char_facts<CodeUnitT>;
 		using code_unit = typename facts::code_unit;
 
-		if (invalid_char == ch)
+		if (badchar == ch)
 		{
 			return out;
 		}
@@ -79,7 +79,7 @@ namespace unipp
 		using facts = char_facts<CodeUnitT>;
 		using code_unit = typename facts::code_unit;
 
-		if (invalid_char == ch)
+		if (badchar == ch)
 		{
 			return out;
 		}

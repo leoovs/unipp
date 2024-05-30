@@ -48,7 +48,7 @@ namespace unipp
 
 			if (!is_decodable())
 			{
-				return invalid_char;
+				return badchar;
 			}
 
 			code_unit value_mask = ~facts::map_code_unit_count_to_leading_byte_mask(m_code_unit_count);
@@ -59,7 +59,7 @@ namespace unipp
 				code_unit continuation_byte = m_character[icodeunit];
 				if ((continuation_byte & facts::continuation_byte_mask) != facts::continuation_byte_signature)
 				{
-					return invalid_char;
+					return badchar;
 				}
 
 				value_mask = ~facts::continuation_byte_mask;
@@ -167,7 +167,7 @@ namespace unipp
 
 			if (!is_decodable())
 			{
-				return invalid_char;
+				return badchar;
 			}
 
 			if (facts::code_unit_single == m_code_unit_count)

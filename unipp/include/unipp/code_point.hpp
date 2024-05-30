@@ -24,6 +24,6 @@ namespace unipp
 	};
 
 	inline constexpr code_point nullchar = code_point(U'\x0');
-	inline constexpr code_point invalid_char = code_point(U'\xFFFD');
+	inline constexpr code_point badchar = code_point(U'\xFFFD');
 }
 
