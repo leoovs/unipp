@@ -10,8 +10,11 @@ namespace unipp
 	public:
 		using view = char_view<std::remove_const_t<CodeUnitT>>;
 
+		using difference_type = ptrdiff_t;
 		using value_type = view;
+		using pointer = value_type*;
 		using reference = value_type&;
+		using iterator_category = std::bidirectional_iterator_tag;
 
 		constexpr iterator() = default;
 
@@ -19,9 +22,14 @@ namespace unipp
 			: m_view(character)
 		{}
 
-		constexpr value_type operator*() const
+		constexpr const value_type& operator*() const
 		{
 			return m_view;
+		}
+
+		constexpr const value_type* operator->() const
+		{
+			return &m_view;
 		}
 
 		constexpr iterator& operator++()
