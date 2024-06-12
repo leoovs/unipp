@@ -53,7 +53,7 @@ namespace unipp
 		size_t value_shift = facts::continuation_byte_significant_bit_count * (count - 1);
 		char32_t value_mask = ~facts::map_code_unit_count_to_leading_byte_mask(count);
 
-		*out = static_cast<code_unit>((ch.symbol >> value_shift) & value_mask)
+		*out++ = static_cast<code_unit>((ch.symbol >> value_shift) & value_mask)
 			| facts::map_code_unit_count_to_leading_byte_signature(count);
 
 		ptrdiff_t leftover = count - 1;
@@ -107,6 +107,24 @@ namespace unipp
 
 		*out++ = high;
 		*out++ = low;
+
+		return ++out;
+	}
+
+	template<
+		typename OutputIterT,
+		typename CodeUnitT = typename detail::iterator_value_trait<OutputIterT>::value_type
+	>
+	constexpr
+	std::enable_if_t<std::is_same_v<CodeUnitT, char32_t>, OutputIterT>
+	write_char(code_point ch, OutputIterT out)
+	{
+		if (badchar == ch)
+		{
+			return out;
+		}
+
+		*out++ = ch.symbol;
 
 		return ++out;
 	}
