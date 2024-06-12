@@ -260,7 +260,58 @@ namespace unipp
 		size_t m_code_unit_count = facts::invalid_code_unit_count;
 	};
 
+	template<>
+	class char_view<char32_t>
+	{
+	public:
+		using code_unit = char32_t;
+
+		constexpr char_view() = default;
+
+		constexpr char_view(std::basic_string_view<code_unit> str)
+			: char_view(str.data(), detail::from_string_view_data)
+		{}
+
+		constexpr code_point decode() const
+		{
+			return code_point(*m_character);
+		}
+
+		constexpr char_view next() const
+		{
+			return char_view(m_character + 1);
+		}
+
+		constexpr char_view prev() const
+		{
+			return char_view(m_character - 1);
+		}
+
+		constexpr std::basic_string_view<code_unit> str_view() const
+		{
+			return std::basic_string_view<code_unit>(m_character, 1);
+		}
+
+		constexpr bool operator==(const char_view& other) const
+		{
+			return m_character == other.m_character;
+		}
+
+		constexpr bool operator!=(const char_view& other) const
+		{
+			return m_character != other.m_character;
+		}
+
+	private:
+		constexpr char_view(const code_unit* character, detail::from_string_view_data_t)
+			: m_character(character)
+		{}
+
+		const code_unit* m_character = nullptr;
+	};
+
 	using char8_view = char_view<std::enable_if_t<CHAR_BIT == 8, char>>;
 	using char16_view = char_view<char16_t>;
+	using char32_view = char_view<char32_t>;
 }
 
