@@ -65,7 +65,7 @@ namespace unipp
 				| facts::continuation_byte_signature;
 		}
 
-		return ++out;
+		return out;
 	}
 
 	template<
@@ -93,7 +93,7 @@ namespace unipp
 		if (facts::code_unit_single == count)
 		{
 			return *out++ = static_cast<code_unit>(ch.symbol);
-			return ++out;
+			return out;
 		}
 
 		char32_t cliped = ch.symbol - facts::surrogate_pair_bit_clip;
@@ -108,7 +108,7 @@ namespace unipp
 		*out++ = high;
 		*out++ = low;
 
-		return ++out;
+		return out;
 	}
 
 	template<
@@ -126,7 +126,7 @@ namespace unipp
 
 		*out++ = ch.symbol;
 
-		return ++out;
+		return out;
 	}
 }
 
