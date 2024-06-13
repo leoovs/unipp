@@ -310,7 +310,7 @@ namespace unipp
 		const code_unit* m_character = nullptr;
 	};
 
-	using char8_view = char_view<std::enable_if_t<CHAR_BIT == 8, char>>;
+	using char8_view = char_view<char>;
 	using char16_view = char_view<char16_t>;
 	using char32_view = char_view<char32_t>;
 }
