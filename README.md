@@ -71,7 +71,7 @@ int main()
 }
 ```
 
-More use cases are provided in the `example` folder, including the way to
+More use cases are available in the `example` folder, including the way to
 support Win32 wide characters.
 
 # Remarks
