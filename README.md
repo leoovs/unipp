@@ -1,18 +1,12 @@
 # Uni++
 
-A C++17 header-only UTF conversion library.
+A convenient iterator-based C++17 header-only library that allows convertions
+between different Unicode Transformational Formats (UTFs).
 
-## Why another Unicode C++ library?
-
-In my spare time I, as a crazy programming fan, do system programming.
-Specifically, games. I find it very joyful to develop my own self contained
-ecosystem from scratch, without relying on third parties as much as possible.
-However, over the time, developing even a minimal Unicode support has become
-really tedious. That's why I decided to become a third party for myself by
-moving all of the Unicode support into a separate library that I can easily
-copy'n'paste into any of my projects (or add it as a __CPM__ package). So yeah,
-the aim of this library is not really to confirm to the community standards,
-just mine.
+Currently, it is possible to seamlessly convert between the following encodings:
+- UTF-8
+- UTF-16
+- UTF-32
 
 ## Prerequisites
 
