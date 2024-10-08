@@ -71,6 +71,9 @@ int main()
 }
 ```
 
+More use cases are provided in the `example` folder, including the way to
+support Win32 wide characters.
+
 # Remarks
 
 The `char` type assumed to be used as a code unit for UTF-8. This is due to the
@@ -81,12 +84,6 @@ literals. Note that `u8` string literals may behave _strange_ in __MSVC__ so che
 out the `cmake/CharSet.cmake` module that can enforce usage of UTF-8 as a source
 character set.
 
-# TODO
-- [ ] Source code documentation
-- [ ] Unit testing (maybe)
-- [ ] Take into account UTF-16 byte order
-- [ ] Tag stable releases in git for easier CPM dependency management
-
-# Sources
+# Sources of information on UTF-8;16;32
 - cppreference.com articles on built-in types
 - Wikipedia articles on UTF-8 and UTF-16 encodings
