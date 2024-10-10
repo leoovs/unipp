@@ -24,6 +24,12 @@ namespace unipp::detail
 	{
 		using value_type = typename ContainerT::value_type;
 	};
+
+	template<typename RawT>
+	struct iterator_value_trait<RawT*>
+	{
+		using value_type = RawT;
+	};
 }
 
 namespace unipp
@@ -53,16 +59,18 @@ namespace unipp
 		size_t value_shift = facts::continuation_byte_significant_bit_count * (count - 1);
 		char32_t value_mask = ~facts::map_code_unit_count_to_leading_byte_mask(count);
 
-		*out++ = static_cast<code_unit>((ch.symbol >> value_shift) & value_mask)
+		*out = static_cast<code_unit>((ch.symbol >> value_shift) & value_mask)
 			| facts::map_code_unit_count_to_leading_byte_signature(count);
+		out++;
 
 		ptrdiff_t leftover = count - 1;
 		for (ptrdiff_t icontinuation = leftover - 1; icontinuation >= 0; icontinuation--)
 		{
 			value_shift = facts::continuation_byte_significant_bit_count * icontinuation;
 			value_mask = ~facts::continuation_byte_mask;
-			*out++ = static_cast<code_unit>((ch.symbol >> value_shift) & value_mask)
+			*out = static_cast<code_unit>((ch.symbol >> value_shift) & value_mask)
 				| facts::continuation_byte_signature;
+			out++;
 		}
 
 		return out;
@@ -92,7 +100,8 @@ namespace unipp
 
 		if (facts::code_unit_single == count)
 		{
-			return *out++ = static_cast<code_unit>(ch.symbol);
+			*out = static_cast<code_unit>(ch.symbol);
+			out++;
 			return out;
 		}
 
@@ -105,8 +114,10 @@ namespace unipp
 		high += facts::high_surrogate_signature;
 		low += facts::low_surrogate_signature;
 
-		*out++ = high;
-		*out++ = low;
+		*out = high;
+		out++;
+		*out = low;
+		out++;
 
 		return out;
 	}
@@ -124,7 +135,8 @@ namespace unipp
 			return out;
 		}
 
-		*out++ = ch.symbol;
+		*out = ch.symbol;
+		out++;
 
 		return out;
 	}
