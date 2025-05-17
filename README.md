@@ -42,14 +42,13 @@ CPMAddPackage("gh:leoovs/unipp#dev")
 
 ## How to use
 
-Currently, all the __Uni++__ source code is `constexpr`-covered. The library
-provides a simple interface for working with the UTF-encoded character sequences.
-It does not dynamically allocate memory behind the scenes and it makes no use of
-exceptions to report errors. The library does not introduce any specific types
-to store code units, it only relies on the standard types like `char` or
-`char16_t` and standard-defined semantics for those types, so you don't have to
-type 'utf8' or 'utf16' everywhere (my personal preference), the only exception
-is the `char` built-in type, see the __Remarks__ section below.
+The library provides a simple interface for working with the UTF-encoded
+character sequences. It allocates very little and allows to specify custom
+allocators. Exceptions are not used. The library does not introduce any
+specific types to store code units, it only relies on the standard types like
+`char` or `char16_t` and standard-defined semantics for those types, so you
+don't have to type 'utf8' or 'utf16' everywhere (my personal preference), the
+only exception is the `char` built-in type, see the __Remarks__ section below.
 
 Here's a basic use-case of __Uni++__:
 
