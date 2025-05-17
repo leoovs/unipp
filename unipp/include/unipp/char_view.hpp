@@ -20,7 +20,9 @@ namespace unipp
 		constexpr code_point decode() const = delete;
 		constexpr char_view next() const = delete;
 		constexpr char_view prev() const = delete;
+
 		constexpr std::basic_string_view<CodeUnitT> str_view() const = delete;
+		constexpr size_t get_code_unit_count() const = delete;
 
 		constexpr bool operator==(const char_view& other) const = delete;
 		constexpr bool operator!=(const char_view& other) const = delete;
@@ -95,6 +97,11 @@ namespace unipp
 		constexpr std::basic_string_view<code_unit> str_view() const
 		{
 			return std::basic_string_view<code_unit>(m_character, m_code_unit_count);
+		}
+
+		constexpr size_t get_code_unit_count() const
+		{
+			return m_code_unit_count;
 		}
 
 		constexpr bool operator==(const char_view& other) const
@@ -206,6 +213,11 @@ namespace unipp
 			return std::basic_string_view<code_unit>(m_character, m_code_unit_count);
 		}
 
+		constexpr size_t get_code_unit_count() const
+		{
+			return m_code_unit_count;
+		}
+
 		constexpr bool operator==(const char_view& other) const
 		{
 			return m_character == other.m_character;
@@ -290,6 +302,11 @@ namespace unipp
 		constexpr std::basic_string_view<code_unit> str_view() const
 		{
 			return std::basic_string_view<code_unit>(m_character, 1);
+		}
+
+		constexpr size_t get_code_unit_count() const
+		{
+			return 1ULL;
 		}
 
 		constexpr bool operator==(const char_view& other) const
