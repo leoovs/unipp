@@ -2,7 +2,7 @@
 #include <array>
 #include <memory_resource>
 
-#include <unipp/eachindex.hpp>
+#include <unipp/each.hpp>
 
 int main()
 {
