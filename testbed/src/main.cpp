@@ -1,19 +1,20 @@
 #include <iostream>
+#include <array>
+#include <memory_resource>
 
-#include <unipp/length.hpp>
+#include <unipp/eachindex.hpp>
 
 int main()
 {
-	constexpr char u8str[] = "Привет, мир! This is π";
-	constexpr char16_t u16str[] = u"Привет, мир! This is π";
-	constexpr char32_t u32str[] = U"Привет, мир! This is π";
+	constexpr std::string_view u8str = "Привет, мир! This is π";
 
-	constexpr size_t u8len = unipp::length(std::string_view(u8str));
-	constexpr size_t u16len = unipp::length(std::u16string_view(u16str));
-	constexpr size_t u32len = unipp::length(std::u32string_view(u32str));
+	std::pmr::polymorphic_allocator<ptrdiff_t> alloc(std::pmr::get_default_resource());
 
-	std::cout << u8len << '\n'
-		<< u16len << '\n'
-		<< u32len << '\n';
+	std::cout << '\'';
+	for (auto i : unipp::eachindex(u8str, alloc))
+	{
+		std::cout << unipp::char8_view(&u8str.at(i)).str_view();
+	}
+	std::cout << "'\n";
 }
 
