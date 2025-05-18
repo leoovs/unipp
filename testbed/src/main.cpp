@@ -35,7 +35,7 @@ private:
 
 int main()
 {
-	constexpr std::string_view u8str = "Привет, мир! This is π";
+	std::string u8str = "Привет, мир! This is π=3.14";
 
 	std::pmr::polymorphic_allocator<unipp::char8_view> custom_alloc(custom_resource::get());
 

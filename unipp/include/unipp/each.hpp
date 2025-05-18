@@ -6,35 +6,53 @@
 namespace unipp::detail
 {
 	template<typename CodeUnitT>
-	struct sv_difference
+	struct str_view_difference
 	{
 		using type = typename std::basic_string_view<CodeUnitT>::difference_type;
 	};
 
 	template<typename CodeUnitT>
-	using sv_difference_t = typename sv_difference<CodeUnitT>::type;
+	using str_view_difference_t = typename str_view_difference<CodeUnitT>::type;
 
 	template<typename CodeUnitT>
-	struct sv_size
+	struct str_view_size
 	{
 		using type = typename std::basic_string_view<CodeUnitT>::size_type;
 	};
 
 	template<typename CodeUnitT>
-	using sv_size_t = typename sv_size<CodeUnitT>::type;
+	using str_view_size_t = typename str_view_size<CodeUnitT>::type;
+
+	template<typename CodeUnitT>
+	struct str_difference
+	{
+		using type = typename std::basic_string<CodeUnitT>::difference_type;
+	};
+
+	template<typename CodeUnitT>
+	using str_difference_t = typename str_difference<CodeUnitT>::type;
+
+	template<typename CodeUnitT>
+	struct str_size
+	{
+		using type = typename std::basic_string<CodeUnitT>::size_type;
+	};
+
+	template<typename CodeUnitT>
+	using str_size_t = typename str_size<CodeUnitT>::type;
 }
 
 namespace unipp
 {
 	template<
 		typename CodeUnitT,
-		typename VectorAllocT = std::allocator<detail::sv_size_t<CodeUnitT>>
+		typename VectorAllocT = std::allocator<detail::str_view_size_t<CodeUnitT>>
 	>
-	constexpr std::vector<detail::sv_size_t<CodeUnitT>, VectorAllocT> eachindex(
+	constexpr std::vector<detail::str_view_size_t<CodeUnitT>, VectorAllocT> eachindex(
 		std::basic_string_view<CodeUnitT> str,
 		const VectorAllocT& alloc = VectorAllocT())
 	{
-		using size_type = detail::sv_size_t<CodeUnitT>;
+		using size_type = detail::str_view_size_t<CodeUnitT>;
 
 		std::vector<size_type, VectorAllocT> indices(alloc);
 		size_type index = 0;
@@ -49,6 +67,17 @@ namespace unipp
 		}
 
 		return indices;
+	}
+
+	template<
+		typename CodeUnitT,
+		typename VectorAllocT = std::allocator<detail::str_size_t<CodeUnitT>>
+	>
+	constexpr std::vector<detail::str_size_t<CodeUnitT>, VectorAllocT> eachindex(
+		const std::basic_string<CodeUnitT>& str,
+		const VectorAllocT& alloc = VectorAllocT())
+	{
+		return eachindex(std::basic_string_view<CodeUnitT>(str), alloc);
 	}
 
 	template<
@@ -70,6 +99,17 @@ namespace unipp
 		}
 
 		return chars;
+	}
+
+	template<
+		typename CodeUnitT,
+		typename VectorAllocT = std::allocator<char_view<CodeUnitT>>
+	>
+	constexpr std::vector<char_view<CodeUnitT>, VectorAllocT> eachchar(
+		const std::basic_string<CodeUnitT>& str,
+		const VectorAllocT& alloc = VectorAllocT())
+	{
+		return eachchar(std::basic_string_view<CodeUnitT>(str), alloc);
 	}
 }
 
