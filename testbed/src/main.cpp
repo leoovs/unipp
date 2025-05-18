@@ -35,13 +35,13 @@ private:
 
 int main()
 {
-	std::string u8str = "Привет, мир! This is π=3.14";
+	std::string u8str = "Привет, мир! This is π indeed";
 
 	std::pmr::polymorphic_allocator<unipp::char8_view> custom_alloc(custom_resource::get());
 
 	for (auto cv : unipp::eachchar(u8str, custom_alloc))
 	{
-		std::cout << cv.str_view();
+		std::cout << cv.str();
 	}
 }
 
