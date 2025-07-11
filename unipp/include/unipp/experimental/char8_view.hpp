@@ -16,9 +16,11 @@ namespace unipp::experimental
 		using code_unit = char;
 		using facts = char_facts<code_unit>;
 
-		constexpr char_view(iterator it)
-			: m_leading_byte_it(it)
-			, m_code_unit_count(decode_code_unit_count(*it))
+		constexpr char_view(iterator begin, iterator end)
+			: m_begin(begin)
+			, m_end(end)
+			, m_leading_byte_it(begin)
+			, m_code_unit_count(decode_code_unit_count())
 		{}
 
 		constexpr operator bool() const
@@ -26,12 +28,25 @@ namespace unipp::experimental
 			return is_valid();
 		}
 
-		constexpr iterator begin() const
+		constexpr char_view operator++(int)
+		{
+			char_view past_me = *this;
+			next_char();
+			return past_me;
+		}
+
+		constexpr char_view operator++()
+		{
+			next_char();
+			return *this;
+		}
+
+		constexpr iterator char_begin() const
 		{
 			return m_leading_byte_it;
 		}
 
-		constexpr iterator end() const
+		constexpr iterator char_end() const
 		{
 			iterator it = m_leading_byte_it;
 			std::advance(it, m_code_unit_count);
@@ -73,17 +88,17 @@ namespace unipp::experimental
 			return result;
 		}
 
-		constexpr char_view next()
-		{
-			return char_view(end());
-		}
-
 	private:
-		static constexpr int8_t decode_code_unit_count(code_unit leading_byte)
+		constexpr int8_t decode_code_unit_count() const
 		{
+			if (m_end == m_leading_byte_it)
+			{
+				return facts::invalid_code_unit_count;
+			}
+
 			for (int8_t possible_count : facts::enumerate_code_unit_count())
 			{
-				if (facts::is_leading_byte_encodes_count(leading_byte, possible_count))
+				if (facts::is_leading_byte_encodes_count(*m_leading_byte_it, possible_count))
 				{
 					return possible_count;
 				}
@@ -102,7 +117,16 @@ namespace unipp::experimental
 			return facts::invalid_code_unit_count != m_code_unit_count;
 		}
 
-		iterator m_leading_byte_it = iterator();
+		constexpr void next_char()
+		{
+			std::advance(m_leading_byte_it, m_code_unit_count);
+			m_code_unit_count = decode_code_unit_count();
+		}
+
+		iterator m_begin;
+		iterator m_end;
+
+		iterator m_leading_byte_it;
 		int8_t m_code_unit_count = facts::invalid_code_unit_count;
 	};
 }
