@@ -59,7 +59,7 @@ namespace unipp::experimental
 			{
 				return badchar;
 			}
-			if (facts::terminator == get_leading_byte())
+			if (facts::terminator == *m_leading_byte_it)
 			{
 				return nullchar;
 			}
@@ -105,11 +105,6 @@ namespace unipp::experimental
 			}
 
 			return facts::invalid_code_unit_count;
-		}
-
-		constexpr code_unit get_leading_byte() const
-		{
-			return *m_leading_byte_it;
 		}
 
 		constexpr bool is_valid() const
