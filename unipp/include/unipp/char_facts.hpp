@@ -21,13 +21,14 @@ namespace unipp
 
 		static constexpr size_t invalid_code_unit_count = 0;
 
-		static constexpr size_t min_code_unit_count = 1;
-		static constexpr size_t max_code_unit_count = 4;
-
 		static constexpr auto enumerate_code_unit_count()
 		{
 			return std::array{ 1, 2, 3, 4 };
 		}
+
+		// TODO: remove when experimental char_view becomes stable.
+		static constexpr size_t min_code_unit_count = 1;
+		static constexpr size_t max_code_unit_count = 4;
 
 		static constexpr code_unit continuation_byte_mask = 0b11000000;
 		static constexpr code_unit continuation_byte_signature = 0b10000000;
