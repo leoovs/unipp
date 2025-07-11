@@ -3,23 +3,22 @@
 #include <cstdint>
 
 #include "unipp/char_facts.hpp"
-#include "unipp/code_point.hpp"
 #include "unipp/experimental/char_view.hpp"
 
 namespace unipp::experimental
 {
 	template<typename IteratorT>
-	class char_view<IteratorT, char>
+	class char_view<IteratorT, char16_t>
 	{
 	public:
 		using iterator = IteratorT;
-		using code_unit = char;
+		using code_unit = char16_t;
 		using facts = char_facts<code_unit>;
 
 		constexpr char_view(iterator begin, iterator end)
 			: m_begin(begin)
 			, m_end(end)
-			, m_leading_byte_it(begin)
+			, m_current(begin)
 			, m_code_unit_count(decode_code_unit_count())
 		{}
 
@@ -43,12 +42,12 @@ namespace unipp::experimental
 
 		constexpr iterator char_begin() const
 		{
-			return m_leading_byte_it;
+			return m_current;
 		}
 
 		constexpr iterator char_end() const
 		{
-			return std::next(m_leading_byte_it, m_code_unit_count);
+			return std::next(m_current, m_code_unit_count);
 		}
 
 		constexpr code_point decode() const
@@ -57,52 +56,49 @@ namespace unipp::experimental
 			{
 				return badchar;
 			}
-			if (facts::terminator == *m_leading_byte_it)
+			if (facts::terminator == *m_current)
 			{
 				return nullchar;
 			}
-
-			code_point result = nullchar;
-
-			iterator it = m_leading_byte_it;
-
-			code_unit significant_bit_mask = ~facts::map_code_unit_count_to_leading_byte_mask(m_code_unit_count);
-			result.symbol = *it & significant_bit_mask;
-			++it;
-
-			for (int8_t icode_unit = 1; icode_unit < m_code_unit_count; ++it, ++icode_unit)
+			if (facts::code_unit_single == m_code_unit_count)
 			{
-				code_unit continuation_byte = *it;
-				if (!facts::is_continuation_byte(continuation_byte))
-				{
-					return badchar;
-				}
-
-				significant_bit_mask = ~facts::continuation_byte_mask;
-				result.symbol <<= facts::continuation_byte_significant_bit_count;
-				result.symbol |= continuation_byte & significant_bit_mask;
+				return code_point(static_cast<char32_t>(*m_current));
 			}
 
-			return result;
+			auto high_significant_bits = static_cast<char32_t>(*m_current)
+				& ~facts::high_surrogate_mask;
+			auto low_significant_bits = static_cast<char32_t>(*std::next(m_current))
+				& ~facts::low_surrogate_mask;
+
+			char32_t symbol = (high_significant_bits
+					<< facts::code_unit_significant_bit_count
+					| low_significant_bits)
+					+ facts::surrogate_pair_bit_clip;
+
+			return code_point(symbol);
 		}
 
 	private:
 		constexpr int8_t decode_code_unit_count() const
 		{
-			if (m_end == m_leading_byte_it)
+			if (m_current == m_end)
 			{
 				return facts::invalid_code_unit_count;
 			}
 
-			for (int8_t possible_count : facts::enumerate_code_unit_count())
+			code_unit potential_high_surrogate = *m_current;
+
+			if (facts::is_high_surrogate(potential_high_surrogate))
 			{
-				if (facts::is_leading_byte_encodes_count(*m_leading_byte_it, possible_count))
+				code_unit potential_low_surrogate = *std::next(m_current);
+				if (facts::is_low_surrogate(potential_low_surrogate))
 				{
-					return possible_count;
+					return facts::code_unit_pair;
 				}
+				return facts::invalid_code_unit_count;
 			}
 
-			return facts::invalid_code_unit_count;
+			return facts::code_unit_single;
 		}
 
 		constexpr bool is_valid() const
@@ -112,14 +108,14 @@ namespace unipp::experimental
 
 		constexpr void next_char()
 		{
-			std::advance(m_leading_byte_it, m_code_unit_count);
+			std::advance(m_current, m_code_unit_count);
 			m_code_unit_count = decode_code_unit_count();
 		}
 
-		iterator m_begin;
-		iterator m_end;
-
-		iterator m_leading_byte_it;
+		iterator m_begin = iterator();
+		iterator m_end = iterator();
+		iterator m_current = iterator();
 		int8_t m_code_unit_count = facts::invalid_code_unit_count;
 	};
 }
+

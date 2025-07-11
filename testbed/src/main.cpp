@@ -2,27 +2,18 @@
 #include <iostream>
 #include <list>
 
+#include <unipp/write_char.hpp>
 #include <unipp/experimental/char8_view.hpp>
+#include <unipp/experimental/char16_view.hpp>
 
 int main()
 {
-	const char names[]
+	const char16_t names[]
 	{
-		'\xE6','\x95','\xB0', // 数
-		'\xE5','\xAD','\x97', // 字
-		'\xE9','\xAB','\x98', // 高
-		'\xE7','\xA8','\x8B', // 程
-		'\xE6','\xA8','\xA1', // 模
-		'\xE5','\x9E','\x8B', // 型
-
-		'\x20', // <Space>
-
-		'\xD0', '\x9B', // Л
-		'\xD0', '\xB5', // е
-		'\xD0', '\xBE', // о
-		'\xD0', '\xBD', // н
-		'\xD0', '\xB8', // и
-		'\xD0', '\xB4', // д
+		u'\xD842', u'\xDFB7', // 𠮷
+		u'\x91CE',            // 野
+		u'\x592A',            // 太
+		u'\x90CE',            // 郎
 	};
 
 	auto begin = std::cbegin(names);
@@ -41,8 +32,10 @@ int main()
 		unipp::code_point cp = cv.decode();
 		char32_t sym = cp.symbol;
 
-		std::cout << std::hex << sym << ": '" << std::string(cv.char_begin(), cv.char_end())
-			<< "'\n";
+		std::string repr;
+		unipp::write_char(cp, std::back_inserter(repr));
+
+		std::cout << std::hex << sym << ": '" << repr << "'\n";
 	}
 }
 

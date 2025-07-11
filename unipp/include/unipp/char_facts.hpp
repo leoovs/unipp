@@ -118,8 +118,18 @@ namespace unipp
 		static constexpr char16_t high_surrogate_mask = 0b1111110000000000;
 		static constexpr char16_t high_surrogate_signature = 0b1101100000000000;
 
+		static constexpr bool is_high_surrogate(char16_t hs)
+		{
+			return (hs & high_surrogate_mask) == high_surrogate_signature;
+		}
+
 		static constexpr char16_t low_surrogate_mask = 0b1111110000000000;
 		static constexpr char16_t low_surrogate_signature = 0b1101110000000000;
+
+		static constexpr bool is_low_surrogate(char16_t ls)
+		{
+			return (ls & low_surrogate_mask) == low_surrogate_signature;
+		}
 
 		static constexpr size_t code_unit_single = 1;
 		static constexpr size_t code_unit_pair = 2;
