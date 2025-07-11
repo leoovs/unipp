@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #include "unipp/pch.hpp"
 #include "unipp/code_point.hpp"
 
@@ -22,8 +24,19 @@ namespace unipp
 		static constexpr size_t min_code_unit_count = 1;
 		static constexpr size_t max_code_unit_count = 4;
 
+		static constexpr auto enumerate_code_unit_count()
+		{
+			return std::array{ 1, 2, 3, 4 };
+		}
+
 		static constexpr code_unit continuation_byte_mask = 0b11000000;
 		static constexpr code_unit continuation_byte_signature = 0b10000000;
+
+		static constexpr bool is_continuation_byte(code_unit cu)
+		{
+			return (continuation_byte_mask & cu) == continuation_byte_signature;
+		}
+
 		static constexpr code_unit continuation_byte_significant_bit_count = 6;
 
 		static constexpr code_unit map_code_unit_count_to_leading_byte_mask(size_t count)
@@ -60,6 +73,12 @@ namespace unipp
 				assert(false && "unipp: invalid code unit length");
 				return 0b11111111;
 			}
+		}
+
+		static constexpr bool is_leading_byte_encodes_count(code_unit leading_byte, size_t count)
+		{
+			return (map_code_unit_count_to_leading_byte_mask(count) & leading_byte)
+				== map_code_unit_count_to_leading_byte_signature(count);
 		}
 
 		static constexpr size_t map_code_point_to_code_unit_count(code_point ch)

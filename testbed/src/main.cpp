@@ -1,47 +1,39 @@
+#include "unipp/char_view.hpp"
 #include <iostream>
-#include <memory_resource>
+#include <list>
 
-#include <unipp/each.hpp>
-
-class custom_resource : std::pmr::memory_resource
-{
-public:
-	static std::pmr::memory_resource* get()
-	{
-		static custom_resource instance;
-		return &instance;
-	}
-
-	void* do_allocate(size_t size, size_t alignment) override
-	{
-		std::cout << "Allocated: " << size << " bytes\n";
-		return m_upstream->allocate(size, alignment);
-	}
-
-	void do_deallocate(void* ptr, size_t size, size_t alignment) override
-	{
-		std::cout << "Deallocated: " << size << " bytes\n";
-		return m_upstream->deallocate(ptr, size, alignment);
-	}
-
-	bool do_is_equal(const std::pmr::memory_resource& other) const noexcept override
-	{
-		return this == &other;
-	}
-
-private:
-	std::pmr::memory_resource* m_upstream = std::pmr::get_default_resource();
-};
+#include <unipp/experimental/char8_view.hpp>
 
 int main()
 {
-	std::string u8str = "Привет, мир! This is π indeed";
-
-	std::pmr::polymorphic_allocator<unipp::char8_view> custom_alloc(custom_resource::get());
-
-	for (auto cv : unipp::eachchar(u8str, custom_alloc))
+	std::list<char> name
 	{
-		std::cout << cv.str();
+		'\xE6','\x95','\xB0', // 数
+		'\xE5','\xAD','\x97', // 字
+		'\xE9','\xAB','\x98', // 高
+		'\xE7','\xA8','\x8B', // 程
+		'\xE6','\xA8','\xA1', // 模
+		'\xE5','\x9E','\x8B', // 型
+
+		'\x20', // <Space>
+
+		'\xD0', '\x9B', // Л
+		'\xD0', '\xB5', // е
+		'\xD0', '\xBE', // о
+		'\xD0', '\xBD', // н
+		'\xD0', '\xB8', // и
+		'\xD0', '\xB4', // д
+	};
+
+	auto cv = unipp::experimental::make_char_view(name.begin());
+	while (cv.begin() != name.end())
+	{
+		unipp::code_point cp = cv.decode();
+		char32_t sym = cp.symbol;
+
+		std::cout << std::hex << sym << '\n';
+
+		cv = cv.next();
 	}
 }
 
