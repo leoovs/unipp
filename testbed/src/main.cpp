@@ -6,7 +6,7 @@
 
 int main()
 {
-	std::vector name
+	const char names[]
 	{
 		'\xE6','\x95','\xB0', // 数
 		'\xE5','\xAD','\x97', // 字
@@ -25,10 +25,19 @@ int main()
 		'\xD0', '\xB4', // д
 	};
 
-	auto cv = unipp::experimental::make_char_view(name.begin(), name.end());
+	auto begin = std::cbegin(names);
+	auto end = std::end(names);
 
-	for (; cv.char_begin() != name.end(); cv++)
+	auto cv = unipp::experimental::make_char_view(begin, end);
+
+	for (; cv.char_begin() != end; cv++)
 	{
+		if (!cv)
+		{
+			std::cerr << "BAD CHAR\n";
+			break;
+		}
+
 		unipp::code_point cp = cv.decode();
 		char32_t sym = cp.symbol;
 
