@@ -12,7 +12,7 @@ namespace unipp::experimental
 	class char_view;
 
 	template<typename IteratorT>
-	char_view<IteratorT> make_char_view(IteratorT it)
+	constexpr char_view<IteratorT> make_char_view(IteratorT it)
 	{
 		return char_view<IteratorT>(it);
 	}
