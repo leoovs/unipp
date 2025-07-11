@@ -116,10 +116,9 @@ namespace unipp::experimental
 			m_code_unit_count = decode_code_unit_count();
 		}
 
-		iterator m_begin;
-		iterator m_end;
-
-		iterator m_leading_byte_it;
+		iterator m_begin = iterator();
+		iterator m_end = iterator();
+		iterator m_leading_byte_it = iterator();
 		int8_t m_code_unit_count = facts::invalid_code_unit_count;
 	};
 }
