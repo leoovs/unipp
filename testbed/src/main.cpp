@@ -1,23 +1,18 @@
-#include "unipp/char_view.hpp"
 #include <iostream>
 #include <list>
 
 #include <unipp/write_char.hpp>
 #include <unipp/experimental/char8_view.hpp>
 #include <unipp/experimental/char16_view.hpp>
+#include <unipp/experimental/char32_view.hpp>
+#include <unipp/experimental/wchar_proxy.hpp>
 
 int main()
 {
-	const char16_t names[]
-	{
-		u'\xD842', u'\xDFB7', // 𠮷
-		u'\x91CE',            // 野
-		u'\x592A',            // 太
-		u'\x90CE',            // 郎
-	};
+	std::u32string names = U"𠮷野太郎";
 
 	auto begin = std::cbegin(names);
-	auto end = std::end(names);
+	auto end = std::cend(names);
 
 	auto cv = unipp::experimental::make_char_view(begin, end);
 

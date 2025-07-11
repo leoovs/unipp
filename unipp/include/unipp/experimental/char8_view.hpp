@@ -16,7 +16,7 @@ namespace unipp::experimental
 		using code_unit = char;
 		using facts = char_facts<code_unit>;
 
-		constexpr char_view(iterator begin, iterator end)
+		constexpr explicit char_view(iterator begin, iterator end)
 			: m_begin(begin)
 			, m_end(end)
 			, m_leading_byte_it(begin)
