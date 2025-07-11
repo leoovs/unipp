@@ -102,10 +102,7 @@ namespace unipp::experimental
 			return facts::invalid_code_unit_count != m_code_unit_count;
 		}
 
-		iterator m_leading_byte_it;
+		iterator m_leading_byte_it = iterator();
 		int8_t m_code_unit_count = facts::invalid_code_unit_count;
 	};
-
-	template<typename IteratorT>
-	using char8_view = char_view<IteratorT, char>;
 }
