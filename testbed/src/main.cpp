@@ -6,7 +6,7 @@
 
 int main()
 {
-	std::list<char> name
+	std::string name
 	{
 		'\xE6','\x95','\xB0', // 数
 		'\xE5','\xAD','\x97', // 字
@@ -31,7 +31,8 @@ int main()
 		unipp::code_point cp = cv.decode();
 		char32_t sym = cp.symbol;
 
-		std::cout << std::hex << sym << '\n';
+		std::cout << std::hex << sym << ": '" << std::string(cv.begin(), cv.end())
+			<< "'\n";
 
 		cv = cv.next();
 	}
