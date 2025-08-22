@@ -11,13 +11,7 @@ namespace unipp::experimental
 		typename = std::enable_if_t<is_code_unit_v<CodeUnitT>>>
 	class char_view;
 
-	template<
-		typename IteratorT,
-		typename CodeUnitT = iterator_value_type_t<IteratorT>,
-		typename = std::enable_if_t<is_code_unit_v<CodeUnitT>>>
-	constexpr char_view<IteratorT> make_char_view(IteratorT begin, IteratorT end)
-	{
-		return char_view<IteratorT>(begin, end);
-	}
+	template<typename IteratorT>
+	char_view(IteratorT, IteratorT) -> char_view<IteratorT>;
 }
 

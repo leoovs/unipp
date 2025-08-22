@@ -14,7 +14,7 @@ int main()
 	auto begin = std::cbegin(names);
 	auto end = std::cend(names);
 
-	auto cv = unipp::experimental::make_char_view(begin, end);
+	auto cv = unipp::experimental::char_view(begin, end);
 
 	for (; cv.char_begin() != end; cv++)
 	{
