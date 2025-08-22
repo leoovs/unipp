@@ -15,7 +15,7 @@ int main()
 	auto begin = std::begin(names);
 	auto end = std::end(names);
 
-	auto cv = unipp::experimental::char_view(begin, end);
+	unipp::experimental::char_view cv(begin, end);
 
 	for (; cv.char_begin() != end; cv++)
 	{
