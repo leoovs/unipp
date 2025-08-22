@@ -5,6 +5,10 @@
 
 namespace unipp::experimental
 {
+	template<>
+	struct is_code_unit<char32_t> : std::true_type
+	{};
+
 	template<typename IteratorT>
 	class char_view<IteratorT, char32_t>
 	{

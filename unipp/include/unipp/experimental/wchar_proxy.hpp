@@ -1,27 +1,46 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
+
+#include <string>
+#include <string_view>
 
 namespace unipp::experimental
 {
-	template<size_t WideCharSizeT = sizeof(wchar_t)>
-	struct is_wchar_proxy_supported : std::bool_constant<false> {};
+	enum class bad_wchar_proxy_t : int8_t {};
+
+	template<size_t ProxySizeT>
+	struct wchar_proxy
+	{
+		using type = bad_wchar_proxy_t;
+	};
 
 	template<>
-	struct is_wchar_proxy_supported<sizeof(char16_t)> : std::bool_constant<true> {};
+	struct wchar_proxy<sizeof(char)> // Just in case...
+	{
+		using type = char;
+	};
 
 	template<>
-	struct is_wchar_proxy_supported<sizeof(char32_t)> : std::bool_constant<true> {};
+	struct wchar_proxy<sizeof(char16_t)>
+	{
+		using type = char16_t;
+	};
 
-	constexpr bool is_wchar_proxy_supported_v = is_wchar_proxy_supported<>::value;
+	template<>
+	struct wchar_proxy<sizeof(char32_t)>
+	{
+		using type = char32_t;
+	};
 
-	using wchar_proxy_t =
-		std::conditional_t<
-			is_wchar_proxy_supported_v,
-			std::conditional_t<
-				sizeof(wchar_t) == sizeof(char16_t),
-				char16_t,
-				char32_t>,
-			void>;
+	using wchar_proxy_t = wchar_proxy<sizeof(wchar_t)>::type;
+
+	using wproxystring = std::basic_string<wchar_proxy_t>;
+	using wproxystring_view = std::basic_string_view<wchar_proxy_t>;
+
+	inline constexpr bool wchar_proxy_supported_v = !std::is_same_v<
+		wchar_proxy_t,
+		bad_wchar_proxy_t>;
 }
 

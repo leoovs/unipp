@@ -7,6 +7,10 @@
 
 namespace unipp::experimental
 {
+	template<>
+	struct is_code_unit<char16_t> : std::true_type
+	{};
+
 	template<typename IteratorT>
 	class char_view<IteratorT, char16_t>
 	{

@@ -9,10 +9,11 @@
 
 int main()
 {
-	std::u32string names = U"𠮷野太郎";
+	std::wstring orig_names = L"𠮷野太郎";
+	unipp::experimental::wproxystring names(orig_names.begin(), orig_names.end());
 
-	auto begin = std::cbegin(names);
-	auto end = std::cend(names);
+	auto begin = std::begin(names);
+	auto end = std::end(names);
 
 	auto cv = unipp::experimental::char_view(begin, end);
 
